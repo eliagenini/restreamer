@@ -1,0 +1,26 @@
+services:
+  streamer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: "streamer"
+    restart: "always"
+    environment:
+      STREAM_URL: ${STREAM_URL}
+    network_mode: "service:gluetun"
+
+  proxy:
+    image: qmcgaw/gluetun
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    volumes:
+      - gluetun:/gluetun
+    environment:
+      - VPN_SERVICE_PROVIDER=${VPN_SERVICE_PROVIDER}
+      - OPENVPN_USER=${OPENVPN_USER}
+      - OPENVPN_PASSWORD=${OPENVPN_PASS}
+      - SERVER_COUNTRIES=${SERVER_COUNTRIES}
+
+volumes:
+  gluetun:
